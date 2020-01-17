@@ -1,0 +1,22 @@
+<h1>Check out</h1>
+
+<form method="post" action="/carCheckOutDone">
+<p>Customers: </p> 
+    <select name="customerID">
+        {% for customerIndex in customerArray %}
+            <option name="{{ customerIndex.customerID }}" value="{{ customerIndex.customerID }}">{{ customerIndex.customerID }}</option>
+        {% endfor %}
+    </select>
+<p>Available Cars: </p> 
+    <select name="regID">
+        {% for carIndex in carArray %}
+            <option name="{{ carIndex.regID }}" value="{{ carIndex.regID }}">{{ carIndex.regID }}</option>
+        {% endfor %}
+    </select>
+
+<input type="submit" value="Check out">
+</form>
+
+<form method="post" action="/"> 
+    <input type="submit" value="Main Menu"> 
+</form>

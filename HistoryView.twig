@@ -1,0 +1,30 @@
+<h1>History</h1>
+
+<table>
+    <tr>
+        <th>Registration Number</th>
+        <th>Customer</th>
+        <th>Check Out Time</th>
+        <th>Check In Time</th>
+        <th>Days</th>
+        <th>Cost</th>
+
+    </tr>
+    {% for historyIndex in historyArray %}
+    <tr>
+        <td>{{historyIndex.regID}}</td>
+        <td>{{historyIndex.customerID}}</td>
+        <td>{{historyIndex.checkOutTime}}</td>
+        <td>{{historyIndex.checkInTime}}</td>
+        <td>{{historyIndex.days}}</td>
+        <td>{{historyIndex.cost}}</td>
+        <td></td>
+        
+    </tr>
+    {% endfor %} 
+
+<form method="post" action="/"> 
+    <input type="submit" value="Main Menu"> 
+</form>      
+
+</table>

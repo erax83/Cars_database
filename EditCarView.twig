@@ -1,0 +1,39 @@
+<h1>Edit Car</h1>
+
+{% block getCar %}
+<form method="post" action="/carEdited">
+    <p>ID number: </p> 
+    <p>{{getCar.regID}}</p>
+    <p>Make: </p> 
+    <select name="make">
+        {% for brandIndex in brands %}
+            {% if brandIndex == getCar.make %}
+            <option name="{{ brandIndex }}" selected value="{{ brandIndex }}">{{ brandIndex }}</option>
+            {% else %}
+            <option name="{{ brandIndex }}" value="{{ brandIndex }}">{{ brandIndex }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <p>Color: </p> 
+    <select name="color">
+        {% for colorIndex in colors %}
+            {% if colorIndex == getCar.color %}
+            <option name="{{colorIndex}}" selected value="{{ colorIndex }}">{{ colorIndex }}</option>
+            {% else %}
+            <option name="{{colorIndex}}" value="{{ colorIndex }}">{{ colorIndex }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <p>Postal Address: </p> 
+    <input type="text" name="prodYear" value="{{getCar.prodYear}}">
+    <p>Phone Number: </p> 
+    <input type="text" name="price" value="{{getCar.price}}">
+    </br>
+    </br>
+    <input type="submit" value="Edit">
+</form>
+{% endblock %} 
+<form method="post" action="/carsIndex">
+    <input type="submit" value="Car Index">
+</form>
+

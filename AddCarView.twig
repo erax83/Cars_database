@@ -1,0 +1,28 @@
+<h1>Add Car</h1>
+
+<form method="post" action="/carAdded">
+    <p>Car ID: </p> 
+    <input type="text" name="regID">
+    <p>Brand: </p> 
+    <select name="make">
+        {% for brandIndex in brands %}
+            <option value="{{ brandIndex }}">{{ brandIndex }}</option>
+        {% endfor %}
+    </select>
+    <p>Color: </p> 
+    <select name="color">
+        {% for colorIndex in colors %}
+            <option value="{{ colorIndex }}">{{ colorIndex }}</option>
+        {% endfor %}
+    </select>
+    <p>Production Year: </p> 
+    <input type="text" name="prodYear">
+    <p>Price: </p> 
+    <input type="text" name="price">
+    </br>
+    </br>
+    <input type="submit" value="Add">
+</form>
+<form method="post" action="/carsIndex">
+    <input type="submit" value="Car Index">
+</form>

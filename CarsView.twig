@@ -1,0 +1,45 @@
+<h1>Cars</h1>
+
+<table>
+    <tr>
+        <th>Registration Number</th>
+        <th>Make</th>
+        <th>Color</th>
+        <th>Production Year</th>
+        <th>Price SEK / Day</th>
+        <th>Checked Out by</th>
+        <th>Check Out Time</th>
+        <th>Edit</th>
+        <th>Delete</th>
+
+    </tr>
+    {% for car in carsArray %}
+    <tr>
+        <td>{{car.regID}}</td>
+        <td>{{car.make}}</td>
+        <td>{{car.color}}</td>
+        <td>{{car.prodYear}}</td>
+        <td>{{car.price}}</td>
+        <td>{{car.customerID}}</td>
+        <td>{{car.checkOutTime}}</td>
+        <td></td>
+        <td><form method="post" action="/editCar/{{car.regID}}"> 
+            <input type="submit" value="Edit"> 
+            </form></td>
+        <td><form method="post" action="/deleteCar/{{car.regID}}"> 
+            <input type="submit" value="Delete"> 
+            </form></td>
+    </tr>
+    {% endfor %} 
+
+<form method="post" action="/"> 
+    <input type="submit" value="Main Menu"> 
+</form>      
+
+<form method="post" action="/addCar"> 
+    <input type="submit" value="Add Car"> 
+</form>
+
+
+</table>
+

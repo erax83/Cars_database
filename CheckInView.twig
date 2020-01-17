@@ -1,0 +1,17 @@
+<h1>Check In</h1>
+
+<form method="post" action="/carCheckInDone">
+
+<p>Cars: </p> 
+    <select name="regID">
+        {% for carIndex in carArray %}
+            <option name="{{ carIndex.regID }}" value="{{ carIndex.regID }}">{{ carIndex.regID }}</option>
+        {% endfor %}
+    </select>
+
+<input type="submit" value="Check in">
+</form>
+
+<form method="post" action="/"> 
+    <input type="submit" value="Main Menu"> 
+</form>

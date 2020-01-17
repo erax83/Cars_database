@@ -1,0 +1,36 @@
+<h1>Customers</h1>
+
+<table>
+    <tr>
+        <th>Customer ID</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Postal Address</th>
+        <th>Phone Number</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    {% for customer in customerArray %}
+    <tr>
+        <td>{{customer.customerID}}</td>
+        <td>{{customer.customerName}}</td>
+        <td>{{customer.address}}</td>
+        <td>{{customer.postalAddress}}</td>
+        <td>{{customer.phonenumber}}</td>
+        <td><form method="post" action="/editCustomer/{{customer.customerID}}"> 
+            <input type="submit" value="Edit"> 
+            </form></td>
+        <td><form method="post" action="/deleteCustomer/{{customer.customerID}}"> 
+            <input type="submit" value="Delete"> 
+            </form></td>
+    </tr>
+    {% endfor %}    
+
+<form method="post" action="/"> 
+  <input type="submit" value="Main Menu"> 
+</form>
+<form method="post" action="/addCustomer"> 
+  <input type="submit" value="Add Customer"> 
+</form>
+   
+</table>
