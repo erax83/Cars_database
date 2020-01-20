@@ -1,16 +1,21 @@
 <?php
+  // html head som innehåller css-styling. 
 
 echo <<< _END
     <!DOCTYPE html>
     <html>
       <head>
-        <title>Hello MVC!</title>
+        <title>Car Rental</title>
         <style>
-            body {background-color: powderblue;
-                    font-family: helvetica;        
-            }
-            h1   {color: blue;}
-            p    {color: red;}
+            body {background-color: whitesmoke;
+                  color: color: #2D200B;
+                  font-family: helvetica; }
+            h1 {color: #2D200B;}
+            p {color: darkbrown;}
+            td {background-color: LightSteelBlue;
+                padding: 8px; }
+            input { background-color: white;
+                    color: black; }
         </style>
       <head>
       <body>
@@ -19,17 +24,17 @@ _END;
 require_once "Login.php";
 require_once "Model.php";
 
+    // Den här klassen hämtar starsidan.
     class MainController {
         public function mainMenu($twig) {
-            echo "inside main controller...";
             return $twig->loadTemplate("MainMenuView.twig")->render([]);
         }
     }
-
-    echo <<< _END
+    
+echo <<< _END
+      
       </body>
     </html>
 _END;
-
 
 ?>

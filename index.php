@@ -13,26 +13,6 @@ $request = new Request();
 $router = new Router(); 
 $connection = login();
 
-echo "something is working...";
-$request->requestTest();
 echo $router->route($request, $twig);
-
-/*
-// Skriver ut från databasen
-$testQuery = $connection->query("select * from Customers");
-print_r ($testQuery);
-var_dump ($connection);
-
-foreach ($testQuery as $t) {
-  echo " Namn: " . $t['customerName'];
-}
-*/
-
-
-/*
-// Databastest från model
-$model = new Model($connection);
-$model->getCustomers();
-*/
 
 ?>

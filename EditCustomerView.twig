@@ -1,9 +1,9 @@
 <h1>Edit Customer</h1>
 
 {% block getCustomer %}
-<form method="post" action="/customerEdited">
+<form method="post" onsubmit="return editCustomerFunction()" action="/customerEdited">
     <p>ID number: </p> 
-    <p>{{getCustomer.customerID}}</p>
+    <input type="text" name="customerID" value="{{getCustomer.customerID}}" readonly>
     <p>Name: </p> 
     <input type="text" name="customerName" value="{{getCustomer.customerName}}">
     <p>Address: </p> 
@@ -11,7 +11,7 @@
     <p>Postal Address: </p> 
     <input type="text" name="postalAddress" value="{{getCustomer.postalAddress}}">
     <p>Phone Number: </p> 
-    <input type="text" name="phoneNumber" value="{{getCustomer.phoneNumber}}">
+    <input type="text" name="phoneNumber" id="phoneId" value="{{getCustomer.phoneNumber}}">
     </br>
     </br>
     <input type="submit" value="Edit">
@@ -21,4 +21,26 @@
     <input type="submit" value="Customer Index">
 </form>
 
+<script>
+    function editCustomerFunction() {
+        let phoneCheck = document.getElementById("phoneId").value;
+        let firstDigit = phoneCheck.substr(0, 1);
 
+        if(phoneCheck.length != 10) {
+            alert("Phone number must contain 10 digits and start with '0'.");
+            return false;
+        }
+
+        if(firstDigit != 0) {
+            alert("Phone number must contain 10 digits and start with '0'.");
+            return false;
+        }
+    }
+    
+</script>
+
+{#
+    Sida med formulär där man kan ändra uppgifter om en person. 
+    Javascriptfunktioner kontrollerar att telefonnummret man anger har tio siffror och att det 
+    börjar på noll.
+#}

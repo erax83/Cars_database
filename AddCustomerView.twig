@@ -1,16 +1,16 @@
 <h1>Add Customer</h1>
 
-<form method="post" action="/customerAdded">
+<form method="post" onsubmit="return addCustomerFunction()" action="/customerAdded">
     <p>ID number: </p> 
-    <input type="text" name="customerID">
+    <input type="text" id="idNr" name="customerID">
     <p>Name: </p> 
     <input type="text" name="customerName">
     <p>Address: </p> 
     <input type="text" name="address">
     <p>Postal Address: </p> 
-    <input type="text" name="postalAddress">
+    <input type="text" id="postTest" name="postalAddress">
     <p>Phone Number: </p> 
-    <input type="text" name="phoneNumber">
+    <input type="text" id="phoneId" name="phoneNumber">
     </br>
     </br>
     <input type="submit" value="Add">
@@ -18,3 +18,56 @@
 <form method="post" action="/customersIndex">
     <input type="submit" value="Customers">
 </form>
+
+<script>
+    function addCustomerFunction() {
+        let idCheck = document.getElementById("idNr").value;
+        
+        function onlyDigits(idCheck) {
+        for (let i = idCheck.length - 1; i >= 0; i--) {
+            let charCodeIndex = idCheck.charCodeAt(i);
+            if (charCodeIndex < 48 || charCodeIndex > 57) 
+            return false
+            }
+            return true
+        }
+
+        if(onlyDigits(idCheck) == false) {
+            alert("Id number contains non numerical value...");
+            return false;
+        }
+
+        if(idCheck.length != 10) {
+            alert("Too short or too long id number");
+            return false;
+        }
+
+        idCheck = idCheck.substr(0, 6);
+        let valid = (new Date('2012-08-09')).getTime() > 0;
+        if(valid == true) {
+            alert(idCheck + " is a correct date");
+        }
+        else {
+            alert("Date is incorrect");
+            return false;
+        }
+        
+        let phoneCheck = document.getElementById("phoneId").value;
+        let firstDigit = phoneCheck.substr(0, 1);
+
+        if(phoneCheck.length != 10) {
+            alert("Phone number must contain 10 digits and start with 0.");
+            return false;
+        }
+        
+        if(firstDigit != 0) {
+            alert("Phone number must contain 10 digits and must start with 0.");
+            return false;
+        }
+    }
+</script>
+
+{#
+    Sida som används för att lägga till nya kunder. Diverse javascript-funktioner 
+    för att kontrollera användarens input.
+#}

@@ -1,8 +1,8 @@
 <h1>Add Car</h1>
 
-<form method="post" action="/carAdded">
-    <p>Car ID: </p> 
-    <input type="text" name="regID">
+<form method="post" onsubmit="return addCarFunction()" action="/carAdded">
+    <p>Car ID: (Ex ABC123) </p> 
+    <input type="text" name="regID" id="regNr">
     <p>Brand: </p> 
     <select name="make">
         {% for brandIndex in brands %}
@@ -16,9 +16,9 @@
         {% endfor %}
     </select>
     <p>Production Year: </p> 
-    <input type="text" name="prodYear">
-    <p>Price: </p> 
-    <input type="text" name="price">
+    <input type="text" name="prodYear" id="prodYearId">
+    <p>Price / Day: </p> 
+    <input type="text" name="price" id="priceId">
     </br>
     </br>
     <input type="submit" value="Add">
@@ -26,3 +26,53 @@
 <form method="post" action="/carsIndex">
     <input type="submit" value="Car Index">
 </form>
+<script>
+function addCarFunction() {
+    let regNrCheck = document.getElementById("regNr").value;
+    
+    if(regNrCheck.length != 6) {
+        alert("Registration number must contain three letters followed by three digits.");
+        return false;
+    }
+
+    let regOne = regNrCheck.substr(0, 3);
+    let regTwo = regNrCheck.substr(3, 3);
+
+    function checkForNumbers(regOne) {
+        return /\d/.test(regOne);
+    }
+
+    if(checkForNumbers(regOne) == true) {
+        alert("Registration number must contain three letters followed by three digits.");
+        return false;
+    }
+
+    function checkForLetters(regTwo) {
+        for (let i = regTwo.length - 1; i >= 0; i--) {
+            let charCodeIndex = regTwo.charCodeAt(i);
+            if (charCodeIndex < 48 || charCodeIndex > 57) 
+            return false
+            }
+            return true
+        }
+
+    if(checkForLetters(regTwo) == false) {
+        alert("Registration number must contain three letters followed by three digits.");
+        return false;
+    }
+
+    let prodYearCheck = document.getElementById("prodYearId").value;
+
+    if(prodYearCheck < 1900 || prodYearCheck > 2020) {
+        alert("Incorrect Production Year value, try again.");
+        return false;
+    } 
+
+    let priceCheck = document.getElementById("priceId").value;
+    
+    if(priceCheck <= 0) {
+        alert("Incorrect price value, try again.");
+        return false;
+    }
+}
+</script>

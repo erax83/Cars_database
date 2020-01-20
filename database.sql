@@ -37,9 +37,10 @@ insert into Customers (
     phoneNumber
   )
 values
-  ('123', 'Albin', 'Asfaltsv 1', '111', '101'),
-  ('456', 'Bertil', 'Asfaltsv 2', '222', '202'),
-  ('789', 'Ceasar', 'Asfaltsv 3', '333', '303');
+  ('4908280706', 'Albin', 'Asfaltsv 1', '111', '0101111111'),
+  ('7005099200', 'Bertil', 'Betongv 2', '222', '0202222222'),
+  ('1507303731', 'Ceasar', 'Citronv 3', '333', '0303333333'),
+  ('6106064295', 'David', 'Dirigentv 4', '444', '0404444444');
 insert into Cars (
     regID,
     make,
@@ -50,17 +51,19 @@ insert into Cars (
     checkOutTime
   )
 values
-  ('555', 'Saab', 'Yellow', '1973', '6000', 'Free', NULL ),
-  ('777', 'Volvo', 'Red', '2003', '5000', 'Free', NULL ),
-  ('999', 'Mustang', 'Blue', '1983', '3000', 'Free', '2020-01-05 10:15:26' ),
-  ('888', 'Saab', 'Blue', '1993', '2000', '123', '2020-01-10 10:15:26' );
+  ('AAA111', 'Saab', 'Yellow', '1973', '500', 'Free', NULL ),
+  ('BBB222', 'Volvo', 'Red', '2003', '1000', 'Free', NULL ),
+  ('CCC333', 'Mustang', 'White', '1983', '3000', '4908280706', '2020-01-05 10:15:26' ),
+  ('DDD444', 'Nissan', 'Blue', '1993', '1500', '7005099200', '2020-01-10 10:15:26' );
 insert into CarColor (color)
 values
   ('Blue'),
+  ('White'),
   ('Red'),
   ('Yellow');
 insert into CarBrand (brand)
 values
   ('Volvo'),
+  ('Nissan'),
   ('Saab'),
   ('Mustang');

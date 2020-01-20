@@ -11,8 +11,8 @@
         <th>Check Out Time</th>
         <th>Edit</th>
         <th>Delete</th>
-
     </tr>
+
     {% for car in carsArray %}
     <tr>
         <td>{{car.regID}}</td>
@@ -22,12 +22,19 @@
         <td>{{car.price}}</td>
         <td>{{car.customerID}}</td>
         <td>{{car.checkOutTime}}</td>
-        <td></td>
         <td><form method="post" action="/editCar/{{car.regID}}"> 
+            {% if car.check == true %}
+            <input type="submit" value="Edit" disabled> 
+            {% else %}
             <input type="submit" value="Edit"> 
+            {% endif %}
             </form></td>
         <td><form method="post" action="/deleteCar/{{car.regID}}"> 
+            {% if car.check == true %}
+            <input type="submit" value="Delete" disabled> 
+            {% else %}
             <input type="submit" value="Delete"> 
+            {% endif %}
             </form></td>
     </tr>
     {% endfor %} 
@@ -40,6 +47,11 @@
     <input type="submit" value="Add Car"> 
 </form>
 
-
 </table>
+
+{#
+    Sidan visar samtliga bilar samt möjlighet att lägga till, ta bort och ändra bilar.
+    Ifelse används för att disabla bilar som är uthyrda och därmed inte ska gå att ändra.
+#}
+
 

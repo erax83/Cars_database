@@ -1,24 +1,30 @@
 <?php
 
 require_once "Login.php";
-require_once "Model.php";
 
+    // I Model samlas alla metoder som sköter kontakten med databasen. Metoderna
+    // hämtar, lägger till, ändrar och raderar värden i databasen via querys.
     class Model {
+        
         private $connection;
-
+        // Connectionvariabeln används för att skapa kontakt med databasen. 
         public function __construct($connection) {
         $this->connection = $connection;
         }
 
-
+        // I denna metoden finns en qury som hämtar all information från
+        // Customertabellen i databasen. Värdena skickas en runda
+        // till prepareCustomersRow där de sorteras i en array.
+        // Denna skickas sedan tillbaka till Controllerdelen.
         public function getAllCustomers() {
             $customerRows = $this->connection->query("select * from Customers");
             return $this->prepareCustomersRows($customerRows);
         }
 
+        // Här läggs värdena från varje rad i tabellen in i en array 
         private function prepareCustomersRows($customerRows) {
             $customers = [];
-
+            
             foreach ($customerRows as $customerRow) {
                 $customerID = $customerRow["customerID"];
                 $customerName = $customerRow["customerName"];
@@ -26,20 +32,48 @@ require_once "Model.php";
                 $postalAddress = $customerRow["postalAddress"];
                 $phoneNumber = $customerRow["phoneNumber"];
 
-                $customer = ["customerID" => $customerID, "customerName" => $customerName, "address" => $address, "postalAddress" => $postalAddress, "phoneNumber" => $phoneNumber];
+                $check = false;
+                $checkResult = $this->checkCustomer($customerID);
+            
+                if($checkResult != '') {
+                    $check = true;
+                }
+                
+                $customer = ["customerID" => $customerID, "customerName" => $customerName, "address" => $address, "postalAddress" => $postalAddress, "phoneNumber" => $phoneNumber, "check" => $check];
                 $customers[] =  $customer;
             }
             return $customers;
         }
 
+        // Denna metod används för att kontrollera om edit och deleteknapparna för en 
+        // kund ska vara möjliga att använda eller ej.  
+        public function checkCustomer($input) {
+            $query = 'SELECT customerID FROM Cars WHERE customerID=:customerID';
+            $values = array(
+                ':customerID' => $input
+            );
+            try {
+                $result = $this->connection->prepare($query);
+                $result->execute($values);
+                }
+            catch (PDOException $e) {
+                echo 'Query error: ' . $e->getMessage();
+                die();
+                }
+            
+            $getResult = $result->fetch();
+            $returnValue = $getResult["customerID"];
+    
+            return $returnValue;
+        }
+
+        // Hämtar bilar från databasen. Samma logik som metoderna ovan.
         public function getAllCars() {
-            echo "inside getAll Cars Model...";
             $carRows = $this->connection->query("select regID, customerID, make, color, prodYear, price, checkOutTime from Cars");
             return $this->prepareCarsRows($carRows);
         }
 
         private function prepareCarsRows($carRows) {
-            echo "inside prepare Cars...";
             $cars = [];
 
             foreach ($carRows as $carRow) {
@@ -51,30 +85,63 @@ require_once "Model.php";
                 $price = $carRow["price"];
                 $checkOutTime = $carRow["checkOutTime"];
 
-                $car = ["regID" => $regID, "customerID" => $customerID, "make" => $make, "color" => $color, "prodYear" => $prodYear, "price" => $price, "checkOutTime" => $checkOutTime];
+                $check = false;
+                $checkResult = $this->checkCar($customerID);
+            
+                if($checkResult != 'Free') {
+                    $check = true;
+                }
+
+                $car = ["regID" => $regID, "customerID" => $customerID, "make" => $make, "color" => $color, "prodYear" => $prodYear, "price" => $price, "checkOutTime" => $checkOutTime, "check" => $check];
                 $cars[] = $car;
             }
             return $cars;
         }
 
+        public function checkCar($input) {
+            $query = 'SELECT customerID FROM Cars WHERE customerID=:customerID';
+            $values = array(
+                ':customerID' => $input
+            );
+            try {
+                $result = $this->connection->prepare($query);
+                $result->execute($values);
+                }
+            catch (PDOException $e) {
+                echo 'Query error: ' . $e->getMessage();
+                die();
+                }
+            
+            $getResult = $result->fetch();
+            $returnValue = $getResult["customerID"];
+
+            return $returnValue;
+        }
+
+        // Lägger till en ny bil i biltabellen.
+        // Hämtar information från användarens input med hjälp av POST.
+        // Användarens val skickas sedan vidare till databasen
         public function addCar($con) {
+            // _POST innehåller information från formulär.
             $regID = ($_POST['regID']);
             $make = ($_POST['make']);
             $color = ($_POST['color']);
             $prodYear = ($_POST['prodYear']);
             $price = ($_POST['price']);
-
-
+            $customerID = 'Free';
+            // Värdena samlas i en array.
             $values = array(
                 ':regID' => $regID,
                 ':make' => $make,
                 ':color' => $color,
                 ':prodYear' => $prodYear,
-                ':price' => $price
+                ':price' => $price,
+                ':customerID' => $customerID
             );
-            
-            $query = 'INSERT INTO Cars (regID, make, color, prodYear, price) VALUES (:regID, :make, :color, :prodYear, :price)';
+            // Query som används för att lägga till värden i databasen.
+            $query = 'INSERT INTO Cars (regID, make, color, prodYear, price, customerID) VALUES (:regID, :make, :color, :prodYear, :price, :customerID)';
 
+            // Kontakten med databasen sker i två steg med prepare och sedan execute. 
             try {
                 $result = $con->prepare($query);
                 $result->execute($values);
@@ -84,7 +151,7 @@ require_once "Model.php";
                 die();
                 }
         }
-
+        // Metod som uppdaterar biltabellen i databasen utifrån bilens registreringsnummer.
         public function prepareEditCar($con, $regID) {
             $values = array(
                 ':regID' => $regID
@@ -93,14 +160,12 @@ require_once "Model.php";
             try {
                 $result = $con->prepare("SELECT * from Cars where regID = :regID");
                 $result->execute($values);
-
                 }
             catch (PDOException $e) {
                 echo 'Query error: ' . $e->getMessage();
                 die();
                 }
             $carRow = $result->fetch();
-                //var_dump($carRow);
             $regID = $carRow["regID"];
             $make = $carRow["make"];
             $color = $carRow["color"];
@@ -112,8 +177,8 @@ require_once "Model.php";
             return $car;
         }
 
+        // Biltabellen editeras 
         public function editCar($con) {
-            echo "inside editcar...";
             $regID = ($_POST['regID']);
             $make = ($_POST['make']);
             $color = ($_POST['color']);
@@ -145,13 +210,13 @@ require_once "Model.php";
                 }
         }
 
+        // Bil raderas från databasen utifrån valt idnummer.
         public function prepareDeleteCar($con, $regId) {
             echo $regId;
             $values = array(
                 ':regId' => $regId
             );
             try {
-                //echo $values[0];
                 $resultDeleteCar = $con->prepare("DELETE from Cars where regID = :regId");
                 $resultDeleteCar->execute($values);
                 $resultDeleteHistory = $con->prepare("DELETE from RentalHistory where regID = :regId");
@@ -165,6 +230,7 @@ require_once "Model.php";
                 }
         }
 
+        // Kund läggs till i databasen.
         public function addCustomer($con) {
             $customerID = ($_POST['customerID']);
             $customerName = ($_POST['customerName']);
@@ -192,6 +258,8 @@ require_once "Model.php";
                 }
         }
 
+        // Värden från vald kund hämtas från databasen utifrån idnummer
+        // för att sedan kunna ändras i ett formulär.
         public function prepareEditCustomer($con, $customerId) {
             $values = array(
                 ':customerId' => $customerId
@@ -219,6 +287,8 @@ require_once "Model.php";
             return $customer;
         }
 
+        // Användarens val för editering av en kund hämtas från formuläret 
+        // för att sedan skickas till databasen.
         public function editCustomer($con) {
             $customerID = ($_POST['customerID']);
             $customerName = ($_POST['customerName']);
@@ -250,8 +320,8 @@ require_once "Model.php";
                 }
         }
 
+        // Vald kund raderas från databasen.
         public function prepareDeleteCustomer($con, $customerId) {
-            echo $customerId;
             $values = array(
                 ':customerId' => $customerId
             );
@@ -269,8 +339,9 @@ require_once "Model.php";
                 }
         }
 
+        // Metoden hämtar samtliga färger från färgtabellen. Dessa hamnar sedan i en dropdownmeny
+        // när man lägger till eller endrar en bil. 
         public function getColors($con) {
-            echo "inside getColor function...";
             try {
                 $result = $con->prepare("SELECT color from CarColor");
                 $result->execute();
@@ -281,13 +352,12 @@ require_once "Model.php";
                 }
             
             $colorArray = $result->fetchAll(PDO::FETCH_COLUMN);
-            echo $colorArray[1];
-            var_dump($colorArray);
             return $colorArray;
         }
 
+        // Metoden hämtar samtliga märken från märkestabellen. Dessa hamnar sedan i en dropdownmeny
+        // när man lägger till eller endrar en bil.
         public function getBrands($con) {
-            echo "inside getBrands function...";
             try {
                 $result = $con->prepare("SELECT brand from CarBrand");
                 $result->execute();
@@ -298,23 +368,19 @@ require_once "Model.php";
                 }
             
             $brandArray = $result->fetchAll(PDO::FETCH_COLUMN);
-            echo $brandArray[1];
-            var_dump($brandArray);
             return $brandArray;
         }
 
-        public function checkOutCar($con, $time) {
-            echo "inside checkOutCar function...";
+        // Metoden checkar ut en bil utifrån personnummer och registreringsnummer.
+        public function checkOutCar($con) {
             $customerID = ($_POST['customerID']);
             $regID = ($_POST['regID']);
-            //$checkOutTime = $time;
 
             $values = array(
                 ':customerID' => $customerID,
                 ':regID' => $regID
-                //':checkOutTime' => $checkOutTime
             );
-            var_dump($values);
+            
             $query = 'UPDATE Cars SET
                 customerID = :customerID, checkOutTime = current_timestamp()  
                 WHERE regID = :regID';
@@ -323,7 +389,6 @@ require_once "Model.php";
                 $result = $con->prepare($query);
                 $result->bindValue('customerID', $customerID, PDO::PARAM_STR);
                 $result->bindValue('regID', $regID, PDO::PARAM_STR);
-                //$result->bindValue('checkOutTime', $checkOutTime, PDO::PARAM_STR);
                 $result->execute();
             }
             catch (PDOException $e) {
@@ -332,9 +397,8 @@ require_once "Model.php";
                 }
         }
 
+        // Metoden checkar in en bil utifrån valt registreringsnummer.
         public function checkInCar($con) {
-            echo "inside checkInCar model function...";
-
             $regID = ($_POST['regID']);
   
             $nullValue = NULL;
@@ -361,10 +425,11 @@ require_once "Model.php";
             }
         }
 
+        // Metoden lägger till en ny rad i Historiktabellen när en 
+        // bil checkats in. Kostnaden för uthyrningen räknas också ut
+        // utifrån priset per dag och hur många dagar som bilen varit uthyrd. 
         public function addToHistory($con) {
-            echo "inside addToHistory...";
             $regID = ($_POST['regID']);
-            echo "regID: " . $regID;
             $infoValue = array(
                 ':regID' => $regID
             );
@@ -381,17 +446,13 @@ require_once "Model.php";
                 }
 
             $resultRow = $infoResult->fetch();
-
             $customerID = $resultRow["customerID"];
             $checkOutTime = $resultRow["checkOutTime"];
             $price = $resultRow["price"];
-
             date_default_timezone_set('Europe/Stockholm');
             $checkInTime = date('Y-m-d h:i:s');
-
             $checkOutTime = strtotime($checkOutTime);  
             $checkInTime = strtotime($checkInTime);  
-
             $diff = abs($checkInTime - $checkOutTime);  
   
             $years = floor($diff / (365*60*60*24));  
@@ -400,13 +461,9 @@ require_once "Model.php";
                                / (30*60*60*24));  
   
             $days = floor(($diff - $years * 365*60*60*24 -  
-            $months*30*60*60*24)/ (60*60*24));  
+            $months*30*60*60*24)/ (60*60*24)) + 1;  
             
-            echo "Date 1: " . $checkOutTime . "  Date 2: " . $checkInTime;
-            echo "   Diff: " . $days;
-
             $cost = $days * $price;
-            echo "Cost: " . $cost;
 
             $values = array(
                 ':regID' => $regID,
@@ -416,8 +473,6 @@ require_once "Model.php";
                 ':days' => $days,
                 ':cost' => $cost
             );
-
-            echo "Test: regID: " . $regID . " customerID: " . $customerID . " checkOutTime: " . $checkOutTime . " checkInTime: " . $checkInTime . " days: " . $days . " cost: " . $cost;
 
             $query = 'INSERT INTO RentalHistory (regID, customerID, checkOutTime, checkInTime, days, cost) VALUES
                 (:regID, :customerID, :checkOutTime, :checkInTime, :days, :cost)';
@@ -432,11 +487,9 @@ require_once "Model.php";
                 }
         }
 
+        // Metoden hämtar raderna från historiktabellen för att visas upp på historiksidan. 
         public function getHistory() {
-            echo "indide getHistory...";
-
             $historyRows = $this->connection->query("select * from RentalHistory");
-
             $historyArray = [];
 
             foreach ($historyRows as $historyRow) {
@@ -451,7 +504,7 @@ require_once "Model.php";
                 $historyArray[] = $history;
             }
             return $historyArray;
-            
+
         }
     }
 ?>

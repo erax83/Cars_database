@@ -16,12 +16,20 @@
         <td>{{customer.customerName}}</td>
         <td>{{customer.address}}</td>
         <td>{{customer.postalAddress}}</td>
-        <td>{{customer.phonenumber}}</td>
+        <td>{{customer.phoneNumber}}</td>
         <td><form method="post" action="/editCustomer/{{customer.customerID}}"> 
+            {% if customer.check == true %} 
+            <input type="submit" value="Edit" disabled> 
+            {% else %}
             <input type="submit" value="Edit"> 
+            {% endif %}
             </form></td>
-        <td><form method="post" action="/deleteCustomer/{{customer.customerID}}"> 
+        <td><form method="post" onsubmit="return deleteCustomerFunction()" action="/deleteCustomer/{{customer.customerID}}">
+            {% if customer.check == true %} 
+            <input type="submit" value="Delete" disabled> 
+            {% else %}
             <input type="submit" value="Delete"> 
+            {% endif %}
             </form></td>
     </tr>
     {% endfor %}    
@@ -34,3 +42,19 @@
 </form>
    
 </table>
+
+<script>
+  function deleteCustomerFunction() {
+    let deleteConfirm = confirm("Are you sure you want to delete customer?");
+    if (deleteConfirm == false) {
+      return false;
+    }
+  }
+</script>
+
+{#
+  Sidan visar lista på kunder. Ifelse satser används för att disabla möjligheten
+  att ändra på eller radera kunder som för närvarande hyr en bil. Javascript 
+  används för att skicka en fråga för att skerställa att man verkligen vill 
+  radera en kund. 
+#}

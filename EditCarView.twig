@@ -1,9 +1,9 @@
 <h1>Edit Car</h1>
 
 {% block getCar %}
-<form method="post" action="/carEdited">
-    <p>ID number: </p> 
-    <p>{{getCar.regID}}</p>
+<form method="post" onsubmit="return editCarFunction()" action="/carEdited">
+    <p>Car ID: </p> 
+    <input type="text" name="regID" value="{{getCar.regID}}" readonly>
     <p>Make: </p> 
     <select name="make">
         {% for brandIndex in brands %}
@@ -24,10 +24,10 @@
             {% endif %}
         {% endfor %}
     </select>
-    <p>Postal Address: </p> 
-    <input type="text" name="prodYear" value="{{getCar.prodYear}}">
-    <p>Phone Number: </p> 
-    <input type="text" name="price" value="{{getCar.price}}">
+    <p>Production Year: </p> 
+    <input type="text" name="prodYear" id="prodYearId" value="{{getCar.prodYear}}">
+    <p>Price / Day: </p> 
+    <input type="text" name="price" id="priceId" value="{{getCar.price}}">
     </br>
     </br>
     <input type="submit" value="Edit">
@@ -37,3 +37,27 @@
     <input type="submit" value="Car Index">
 </form>
 
+<script>
+function editCarFunction() {
+
+    let prodYearCheck = document.getElementById("prodYearId").value;
+    if(prodYearCheck < 1900 || prodYearCheck > 2020) {
+        alert("Incorrect Production Year value, try again.");
+        return false;
+    } 
+
+    let priceCheck = document.getElementById("priceId").value;
+    if(priceCheck <= 0) {
+        alert("Incorrect price value, try again.");
+        return false;
+    }
+    
+}
+</script>
+
+{#
+    Sida med formulär för att ändra uppgifter om en bil. 
+    If else satser används för att disabla möjligheten att radera eller 
+    editera bilar som är uthyrda. Javascript används för att kontrollera 
+    produktionsdatumet för bilen samt att dygnspriset är ett poitivt tal.
+#}
